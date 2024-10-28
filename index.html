@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gin-Everywhere To Do App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f0e9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            margin: 20px auto;
+            gap: 20px;
+        }
+        .tasks, .add-task {
+            background-color: #fff7c0; /* Sticky note yellow */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+            transform: rotate(-1deg);
+        }
+        .tasks {
+            width: 60%;
+        }
+        .add-task {
+            width: 35%;
+            background-color: #ffefc4;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #444;
+            text-align: center;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #fef3a1;
+            border-radius: 6px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transform: rotate(1deg);
+        }
+        .task-info {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .task-actions a {
+            text-decoration: none;
+            color: #d35400;
+        }
+        .task-actions a:hover {
+            text-decoration: underline;
+        }
+        .add-task form {
+            display: flex;
+            flex-direction: column;
+        }
+        input[type="text"], select, input[type="date"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff7c0;
+            font-size: 1rem;
+            color: #444;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #ff9500;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tasks">
+            <h1>My Tasks</h1>
+            <ul>
+                {% for todo in todos %}
+                <li>
+                    <div class="task-info">
+                        <input type="checkbox" name="done" {% if todo['done'] %} checked {%endif%} disabled>
+                        <span {%if todo['done'] %} style="text-decoration: line-through" {%endif%}>
+                            {{ todo['task'] }}
+                        </span> 
+                        <span>Due: {{ todo['date'] }} | Priority: {{ todo['priority'] }}</span>
+                    </div>
+                    <div class="task-actions">
+                        <a href="{{ url_for('check', index=loop.index0) }}">Check</a>
+                        <a href="{{ url_for('edit', index=loop.index0) }}">Edit</a>
+                        <a href="{{ url_for('delete', index=loop.index0) }}">Delete</a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="add-task">
+            <h1>Add New Task</h1>
+            <form action="{{ url_for('add') }}" method="post">
+                <input type="text" name="todo" placeholder="Enter new task" required>
+                <input type="date" name="date" required>
+                <select name="priority" required>
+                    <option value="" disabled selected>Select priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
